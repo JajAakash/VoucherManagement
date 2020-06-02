@@ -134,6 +134,8 @@ router.post('/redeem/coupon',(req,res)=>{
 // Get Voucher API
 
 
+//API TO get data based on email
+// user input email from client side
 router.post('/vouchers',(req,res)=>{
     Voucher.find({email:req.body.email}).exec(function(err,voucher){
         if(err){
@@ -145,6 +147,8 @@ router.post('/vouchers',(req,res)=>{
     })
 })
 
+// user input status from client side
+//API TO get data based on status
 router.post('/vouchers/status',(req,res)=>{
     Voucher.find({status:req.body.status}).exec(function(err,voucher){
         if(err){
