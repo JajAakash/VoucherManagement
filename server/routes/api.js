@@ -31,7 +31,6 @@ router.post('/coupon',async (req,res)=>{
     voucher.usage=0;
     voucher.email=req.body.email
     voucher.genTime=new Date();
-    voucher.lastUsed=new Date();
     voucher.voucherAmount=req.body.voucherAmount;
     voucher.status="active";
     voucher.code="VCD"+randomstring.generate(10);
@@ -73,18 +72,18 @@ router.post('/redeem/coupon',(req,res)=>{
                     return res.status(401).send("Your PIN is not valid")
                 }
 
-                if(authorizedUser.genTime.getDate()<new Date()){
+                if((authorizedUser.genTime.getDate()-new Date().getDate)>0){
                     return res.status(200).send("Your Coupon has been expired!!")
                 }
 
-                if(authorizedUser.genTime.getDate()<new Date()){
-                    return res.status(200).send("Your Coupon has been expired!!")
-                }
+                // if(authorizedUser.genTime.getDate()<new Date()){
+                //     return res.status(200).send("Your Coupon has been expired!!")
+                // }
 
                 if(authorizedUser.usage>=5){
                     return res.status(404).send("Coupon not valid!!")
                 }
-                if(userAmount>(authorizedUser.voucherAmount-authorizedUser.redeemedAmount)){
+                if(req.body.userAmount>(authorizedUser.voucherAmount-authorizedUser.redeemedAmount)){
                     return res.status(404).send("Coupon not valid!!")
                 }
                 
@@ -108,7 +107,7 @@ router.post('/redeem/coupon',(req,res)=>{
 
                     Voucher.findByIdAndUpdate(authorizedUser._id,
                         {
-                        $set:{usage:authorizedUser.usage+=1,status:updatedstatus,redeemedAmount:updatedredeemedAmount,lastUsed:new Date()}
+                        $set:{usage:authorizedUser.usage+=1,status:updatedstatus,redeemedAmount:updatedredeemedAmount}
                         }
                         ,
                         {
